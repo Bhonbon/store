@@ -1,113 +1,113 @@
-import Image from "next/image";
+'use client'
+
+import { useEffect, useState } from "react";
+import axios from 'axios';
 
 export default function Home() {
+  const [search, setSearch] = useState('')
+  const [data, setData] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const perPage = 9;
+
+  useEffect(() => {
+      axios.get('http://localhost:3030/products')
+      .then(res => {
+          setData(res.data)
+      })
+  }, [])
+
+  
+  const filteredData = data.filter(item => 
+    item.product.toLowerCase().includes(search.toLowerCase()) ||
+    item.type.toLowerCase().includes(search.toLowerCase())
+  );
+  
+
+  const lIndex = currentPage * perPage;
+  const fIndex = lIndex - perPage;
+  const records = filteredData.slice(fIndex, lIndex);
+  const npage = Math.ceil(filteredData.length / perPage);
+  const numbers = [...Array(npage + 1).keys()].slice(1);
+
+  const prePage = () => {
+    if (currentPage !== fIndex) {
+      setCurrentPage(currentPage - 1)
+    }
+  }
+  const nextPage = () => {
+    if (currentPage !== lIndex) {
+      setCurrentPage(currentPage + 1)
+    }
+  }
+  const changeCurrentPage = (id) => {
+    setCurrentPage(id)
+  }
+  const handleChange = (e) => {
+    setCurrentPage(1)
+    setSearch(e.target.value)
+}
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className="p-3 h-screen bg-green-500">
+      <div className="mt-10">
+        <div>
+          <input className="border border-gray-500 p-1 outline-none w-full mb-2 rounded-md" 
+            type="search"
+            value={search}
+            onChange={handleChange}
+            placeholder="Search It!"/>
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+          <div className="overflow-auto rounded-md">
+              <table className="table-auto min-w-full divide-y divide-gray-200">
+                  <thead>
+                      <tr>
+                          <th className="text-green-500 px-6 py-3 bg-gray-50 text-left text-md leading-4 font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                          <th className="text-green-500 px-6 py-3 bg-gray-50 text-left text-md leading-4 font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                          <th className="text-green-500 px-6 py-3 bg-gray-50 text-left text-md leading-4 font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                      </tr>
+                  </thead>
+            
+                  <tbody className="bg-white divide-y divide-gray-200">
+                     { 
+                      records.map((item,index) => (
+                        <tr key={index}>
+                          <td className="px-6 py-2 whitespace-no-wrap capitalize">
+                              {item.product}
+                          </td>
+                          <td className="px-6 py-2 whitespace-no-wrap capitalize">
+                              {item.price}
+                          </td>
+                          <td className="px-6 py-2 whitespace-no-wrap capitalize">
+                              {item.type}
+                          </td>
+                      </tr> 
+                      ))
+                     }
+                  </tbody>
+          
+              </table>
+              <nav>
+                 <ul className="flex flex-row mt-2 p-2 gap-2 bg-white w-full overflow-auto">
+                     <li className="border p-2 bg-green-500 text-white">
+                        <a href="#"
+                        onClick={prePage}>Prev</a>
+                     </li>
+                     {
+                      numbers.map((n,i) => (
+                        <li className={`border p-2 bg-green-500 text-white ${currentPage === n ? 'opacity-75' : ''}`} key={i}>
+                            <a href="#"
+                            onClick={() => changeCurrentPage(n)}>{n}</a>
+                        </li>
+                      ))
+                     }
+                     <li className="border p-2 bg-green-500 text-white">
+                        <a href="#"
+                        onClick={nextPage}>Next</a>
+                     </li>
+                 </ul>
+              </nav>
+          </div>
       </div>
     </main>
   );
 }
+
