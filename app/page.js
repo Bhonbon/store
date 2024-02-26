@@ -10,7 +10,7 @@ export default function Home() {
   const perPage = 9;
 
   useEffect(() => {
-    axios.get(`https://cors-anywhere.herokuapp.com/https://sari-sari-two.vercel.app/products`)
+    axios.get("https://sari-sari-two.vercel.app/products")
       .then(res => {
           setData(res.data)
       })
