@@ -10,7 +10,7 @@ export default function Home() {
   const perPage = 9;
 
   useEffect(() => {
-      axios.get('http://localhost:3030/products')
+      axios.get('https://sari-sari-two.vercel.app/products')
       .then(res => {
           setData(res.data)
       })
