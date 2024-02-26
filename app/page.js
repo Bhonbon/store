@@ -14,6 +14,9 @@ export default function Home() {
       .then(res => {
           setData(res.data)
       })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
   }, [])
 
   
